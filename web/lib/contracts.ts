@@ -1,0 +1,223 @@
+import type { Abi, Address } from "viem";
+
+export const safePayEscrowAbi = [
+  {
+    type: "constructor",
+    inputs: [{ name: "initialSupportedTokens", type: "address[]" }],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "agreementCount",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "supportedTokens",
+    inputs: [{ name: "token", type: "address" }],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "totalLiability",
+    inputs: [{ name: "token", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "createAgreement",
+    inputs: [
+      { name: "contractor", type: "address" },
+      { name: "token", type: "address" },
+      { name: "resolver", type: "address" },
+      { name: "totalAmount", type: "uint256" },
+      { name: "approvalWindow", type: "uint256" },
+      { name: "disputeWindow", type: "uint256" },
+      { name: "clientCancellationFee", type: "uint256" },
+      {
+        name: "milestones",
+        type: "tuple[]",
+        components: [
+          { name: "amount", type: "uint256" },
+          { name: "descriptionHash", type: "bytes32" },
+          { name: "descriptionURI", type: "string" },
+        ],
+      },
+    ],
+    outputs: [{ name: "agreementId", type: "uint256" }],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "fundAgreement",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "submitMilestone",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "milestoneIndex", type: "uint256" },
+      { name: "evidenceHash", type: "bytes32" },
+      { name: "evidenceURI", type: "string" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "approveMilestone",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "milestoneIndex", type: "uint256" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "releaseMilestone",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "milestoneIndex", type: "uint256" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "cancelAgreement",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "raiseDispute",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "milestoneIndex", type: "uint256" },
+      { name: "reasonHash", type: "bytes32" },
+      { name: "reasonURI", type: "string" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "resolveDispute",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "milestoneIndex", type: "uint256" },
+      { name: "resolution", type: "uint8" },
+      { name: "contractorAmount", type: "uint256" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "getAgreement",
+    inputs: [{ name: "agreementId", type: "uint256" }],
+    outputs: [
+      {
+        name: "details",
+        type: "tuple",
+        components: [
+          { name: "client", type: "address" },
+          { name: "contractor", type: "address" },
+          { name: "token", type: "address" },
+          { name: "resolver", type: "address" },
+          { name: "totalAmount", type: "uint256" },
+          { name: "remainingBalance", type: "uint256" },
+          { name: "approvalWindow", type: "uint256" },
+          { name: "disputeWindow", type: "uint256" },
+          { name: "clientCancellationFee", type: "uint256" },
+          { name: "createdAt", type: "uint256" },
+          { name: "fundedAt", type: "uint256" },
+          { name: "status", type: "uint8" },
+          { name: "milestoneCount", type: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getMilestone",
+    inputs: [
+      { name: "agreementId", type: "uint256" },
+      { name: "milestoneIndex", type: "uint256" },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "amount", type: "uint256" },
+          { name: "descriptionHash", type: "bytes32" },
+          { name: "descriptionURI", type: "string" },
+          { name: "status", type: "uint8" },
+          { name: "evidenceHash", type: "bytes32" },
+          { name: "evidenceURI", type: "string" },
+          { name: "submittedAt", type: "uint256" },
+          { name: "approvalDeadline", type: "uint256" },
+          { name: "disputeDeadline", type: "uint256" },
+          { name: "disputeRaisedBy", type: "address" },
+          { name: "disputeReasonHash", type: "bytes32" },
+          { name: "disputeReasonURI", type: "string" },
+          { name: "contractorPayout", type: "uint256" },
+          { name: "clientRefund", type: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "event",
+    name: "AgreementCreated",
+    inputs: [
+      { indexed: true, name: "agreementId", type: "uint256" },
+      { indexed: true, name: "client", type: "address" },
+      { indexed: true, name: "contractor", type: "address" },
+      { indexed: false, name: "token", type: "address" },
+      { indexed: false, name: "resolver", type: "address" },
+      { indexed: false, name: "totalAmount", type: "uint256" },
+      { indexed: false, name: "approvalWindow", type: "uint256" },
+      { indexed: false, name: "disputeWindow", type: "uint256" },
+      { indexed: false, name: "clientCancellationFee", type: "uint256" },
+      { indexed: false, name: "milestoneCount", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "AgreementFunded",
+    inputs: [
+      { indexed: true, name: "agreementId", type: "uint256" },
+      { indexed: true, name: "client", type: "address" },
+      { indexed: false, name: "amount", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "MilestoneSubmitted",
+    inputs: [
+      { indexed: true, name: "agreementId", type: "uint256" },
+      { indexed: true, name: "milestoneIndex", type: "uint256" },
+      { indexed: false, name: "evidenceHash", type: "bytes32" },
+      { indexed: false, name: "evidenceURI", type: "string" },
+      { indexed: false, name: "approvalDeadline", type: "uint256" },
+      { indexed: false, name: "disputeDeadline", type: "uint256" },
+    ],
+  },
+] as const satisfies Abi;
+
+export const safePayEscrowAddress =
+  (process.env.NEXT_PUBLIC_SAFE_PAY_ESCROW_ADDRESS as Address | undefined) ??
+  "0x0000000000000000000000000000000000000000";
